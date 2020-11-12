@@ -54,16 +54,13 @@ io.on("connection", socket => {
   /** host begins game */
   socket.on(
     "startGame",
-    (
-      { roomId, numberOfRounds, numberOfQuestionsPerRound, categoryIds },
-      callback
-    ) => {
+    ({ roomId, numberOfRounds, numberOfQuestionsPerRound, categoryIds }) => {
       const room = rooms[roomId];
       if (room) {
         room.setNumberOfRounds(numberOfRounds);
         room.setNumberOfQuestionsPerRound(numberOfQuestionsPerRound);
         room.setCategories(categoryIds);
-        callback();
+        io.to(socket.id).emit("gameStarted");
       }
     }
   );
@@ -103,6 +100,7 @@ io.on("connection", socket => {
 
   /** host alerts server the game is over */
   socket.on("endGame", ({ roomId }) => {
+    const room = rooms[roomId];
     if (room[roomId]) delete room[roomId];
   });
 
