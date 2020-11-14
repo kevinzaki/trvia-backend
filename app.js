@@ -16,27 +16,17 @@ io.on("connection", socket => {
   console.log(`A new user with a socket id of ${socket.id} has connected.`);
 
   /** host creates new game */
-  socket.on(
-    "createRoom",
-    ({ id, numberOfRounds, numberOfQuestionsPerRound, categoryIds }) => {
-      if (!rooms[id]) {
-        FETCH_TOKEN()
-          .then(token => {
-            rooms[id] = new Room(
-              id,
-              token,
-              socket.id,
-              numberOfRounds,
-              numberOfQuestionsPerRound,
-              categoryIds
-            );
-          })
-          .then(() => console.log(rooms[id]));
-      }
-      socket.join(id);
-      console.log(`socket id ${socket.id} created and joined room ${id}`);
+  socket.on("createRoom", ({ id, roundSettings }) => {
+    if (!rooms[id]) {
+      FETCH_TOKEN()
+        .then(token => {
+          rooms[id] = new Room(id, token, socket.id, roundSettings);
+        })
+        .then(() => console.log(rooms[id]));
     }
-  );
+    socket.join(id);
+    console.log(`socket id ${socket.id} created and joined room ${id}`);
+  });
 
   /** player joins game */
   socket.on("joinRoom", ({ id, name }) => {
@@ -52,25 +42,20 @@ io.on("connection", socket => {
   });
 
   /** host begins game */
-  socket.on(
-    "startGame",
-    ({ roomId, numberOfRounds, numberOfQuestionsPerRound, categoryIds }) => {
-      const room = rooms[roomId];
-      if (room) {
-        room.setNumberOfRounds(numberOfRounds);
-        room.setNumberOfQuestionsPerRound(numberOfQuestionsPerRound);
-        room.setCategories(categoryIds);
-        io.to(socket.id).emit("gameStarted");
-      }
+  socket.on("startGame", ({ roomId, roundSettings }) => {
+    const room = rooms[roomId];
+    if (room) {
+      room.setRoundSettings(roundSettings);
+      io.to(socket.id).emit("gameStarted");
     }
-  );
+  });
 
   /** host requests question */
-  socket.on("getQuestion", ({ roomId }) => {
+  socket.on("getQuestion", ({ roomId, round }) => {
     const room = rooms[roomId];
     if (room) {
       (async () => {
-        await room.newQuestion();
+        await room.newQuestion(room.getCategoryId(round));
         io.to(socket.id).emit("question", room.getQuestion()); // send to host
         socket.to(roomId).emit("answers", room.getQuestionAnswers()); // send to players
       })();

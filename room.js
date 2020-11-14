@@ -1,33 +1,31 @@
 const Player = require("./player"); /** Player Class */
 const TriviaQuestion = require("./triviaQuestion");
 class Room {
-  constructor(
-    id,
-    token,
-    hostId,
-    numberOfRounds,
-    numberOfQuestionsPerRound,
-    categories
-  ) {
+  constructor(id, token, hostId, roundSettings) {
     this.id = id;
     this.hostId = hostId;
     this.token = token;
     this.players = {};
-    this.numberOfRounds = numberOfRounds;
-    this.numberOfQuestionsPerRound = numberOfQuestionsPerRound;
-    this.categories = categories;
     this.roundCount = 0;
     this.quesitonCount = 0;
     this.question = null;
+    this.roundSettings = roundSettings;
   }
-  setNumberOfRounds(numberOfRounds) {
-    this.numberOfRounds = numberOfRounds;
+  // setNumberOfRounds(numberOfRounds) {
+  //   this.numberOfRounds = numberOfRounds;
+  // }
+  // setNumberOfQuestionsPerRound(numberOfQuestionsPerRound) {
+  //   this.numberOfQuestionsPerRound = numberOfQuestionsPerRound;
+  // }
+  // setCategories(categories) {
+  //   this.categories = categories;
+  // }
+  setRoundSettings(settings) {
+    this.roundSettings = settings;
   }
-  setNumberOfQuestionsPerRound(numberOfQuestionsPerRound) {
-    this.numberOfQuestionsPerRound = numberOfQuestionsPerRound;
-  }
-  setCategories(categories) {
-    this.categories = categories;
+  getCategoryId(round) {
+    if (!this.roundSettings[round - 1]) return null;
+    else return this.roundSettings[round - 1].category;
   }
   getToken() {
     return this.token;
@@ -38,11 +36,8 @@ class Room {
   getPlayer(id) {
     return this.players[id];
   }
-  async newQuestion() {
-    const val = await TriviaQuestion.init(
-      this.categories[this.roundCount],
-      this.token
-    );
+  async newQuestion(category) {
+    const val = await TriviaQuestion.init(category, this.token);
 
     if (!val[0]) return null;
     const question = decodeURIComponent(val[0].question);
