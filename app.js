@@ -3,9 +3,12 @@ const { FETCH_TOKEN } = require("./client");
 
 const express = require("express"); /** require express */
 const socketio = require("socket.io"); /** require socket io */
+const cors = require("cors");
 
 const app = express(); /** create an instance of express server */
 const expressServer = app.listen(3001); /** express server */
+
+app.use(cors());
 
 /** create an instance of socketio and pass it our http server we are binding to */
 const io = socketio(expressServer, { forceNew: true });
