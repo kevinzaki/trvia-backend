@@ -7,7 +7,7 @@ socketio.set("origins", "*:*");
 const cors = require("cors");
 
 const app = express(); /** create an instance of express server */
-const expressServer = app.listen(3001); /** express server */
+const expressServer = app.listen(3000); /** express server */
 
 app.use(cors());
 
