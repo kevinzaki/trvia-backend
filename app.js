@@ -2,12 +2,8 @@ const Room = require("./room.js"); /** Room Class */
 const { FETCH_TOKEN } = require("./client");
 
 const express = require("express"); /** require express */
-const socketio = require("socket.io")(httpServer, {
-  cors: {
-    origin: "https://trviaco.firebaseapp.com/",
-    methods: ["GET", "POST"]
-  }
-}); /** require socket io */
+const socketio = require("socket.io"); /** require socket io */
+socketio.set("origins", "*:*");
 const cors = require("cors");
 
 const app = express(); /** create an instance of express server */
