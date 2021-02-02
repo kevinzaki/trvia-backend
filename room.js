@@ -41,7 +41,6 @@ class Room {
     );
     possibleAnswers.push(correctAnswer);
     possibleAnswers = shuffle(possibleAnswers);
-    console.log(possibleAnswers);
     this.question = new TriviaQuestion({
       question,
       possibleAnswers,
