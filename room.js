@@ -1,5 +1,7 @@
 const Player = require("./player"); /** Player Class */
 const TriviaQuestion = require("./triviaQuestion");
+const { shuffle } = require("./shuffle");
+
 class Room {
   constructor(id, token, hostId, roundSettings) {
     this.id = id;
@@ -11,15 +13,6 @@ class Room {
     this.question = null;
     this.roundSettings = roundSettings;
   }
-  // setNumberOfRounds(numberOfRounds) {
-  //   this.numberOfRounds = numberOfRounds;
-  // }
-  // setNumberOfQuestionsPerRound(numberOfQuestionsPerRound) {
-  //   this.numberOfQuestionsPerRound = numberOfQuestionsPerRound;
-  // }
-  // setCategories(categories) {
-  //   this.categories = categories;
-  // }
   setRoundSettings(settings) {
     this.roundSettings = settings;
   }
@@ -37,15 +30,18 @@ class Room {
     return this.players[id];
   }
   async newQuestion(category) {
+    console.log("HERE");
     const val = await TriviaQuestion.init(category, this.token);
 
     if (!val[0]) return null;
     const question = decodeURIComponent(val[0].question);
-    const possibleAnswers = val[0].incorrect_answers.map(ans =>
-      decodeURIComponent(ans)
-    );
     const correctAnswer = decodeURIComponent(val[0].correct_answer);
+    let possibleAnswers = shuffle(
+      val[0].incorrect_answers.map(ans => decodeURIComponent(ans))
+    );
     possibleAnswers.push(correctAnswer);
+    possibleAnswers = shuffle(possibleAnswers);
+    console.log(possibleAnswers);
     this.question = new TriviaQuestion({
       question,
       possibleAnswers,
