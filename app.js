@@ -4,9 +4,12 @@ const { FETCH_TOKEN } = require("./client");
 const express = require("express"); /** require express */
 const socketio = require("socket.io"); /** require socket io */
 const cors = require("cors");
+const PORT = process.env.PORT || 3000;
 
 const app = express(); /** create an instance of express server */
-const expressServer = app.listen(3000); /** express server */
+const expressServer = app.listen(PORT, () =>
+  console.log(`Listening on ${PORT}`)
+); /** express server */
 
 app.use(cors());
 
