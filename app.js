@@ -13,9 +13,9 @@ app.use(cors());
 /** create an instance of socketio and pass it our http server we are binding to */
 const io = socketio(expressServer, {
   cors: {
-    origin: "https://trviaco.firebaseapp.com",
+    origin: "*",
     methods: ["GET", "POST"],
-    credentials: true
+    allowedHeaders: ["content-type"]
   }
 });
 
