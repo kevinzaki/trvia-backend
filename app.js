@@ -3,7 +3,6 @@ const { FETCH_TOKEN } = require("./client");
 
 const express = require("express"); /** require express */
 const socketio = require("socket.io"); /** require socket io */
-socketio.set("origins", "*:*");
 const cors = require("cors");
 
 const app = express(); /** create an instance of express server */
