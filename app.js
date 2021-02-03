@@ -12,8 +12,8 @@ app.use(cors());
 
 /** create an instance of socketio and pass it our http server we are binding to */
 const io = socketio(expressServer, {
-  forceNew: true,
-  origins: ["https://trviaco.firebaseapp.com/"]
+  cors: true,
+  origins: ["https://trviaco.firebaseapp.com"]
 });
 
 const rooms = {}; /** all current games */
