@@ -11,7 +11,10 @@ const expressServer = app.listen(3000); /** express server */
 app.use(cors());
 
 /** create an instance of socketio and pass it our http server we are binding to */
-const io = socketio(expressServer, { forceNew: true });
+const io = socketio(expressServer, {
+  forceNew: true,
+  origins: ["https://trviaco.firebaseapp.com/"]
+});
 
 const rooms = {}; /** all current games */
 
